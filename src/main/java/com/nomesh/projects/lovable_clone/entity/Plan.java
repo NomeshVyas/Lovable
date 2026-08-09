@@ -10,6 +10,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Plan {
     Long id;
+    int price;
 
     String stripePriceId;
 
