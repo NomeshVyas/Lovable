@@ -7,7 +7,9 @@ import com.nomesh.projects.lovable_clone.dto.subscription.PortalResponse;
 import com.nomesh.projects.lovable_clone.dto.subscription.SubscriptionResponse;
 import com.nomesh.projects.lovable_clone.service.PlanService;
 import com.nomesh.projects.lovable_clone.service.SubscriptionService;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,10 +18,11 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class BillingController {
 
-    private final PlanService planService;
-    private final SubscriptionService subscriptionService;
+    PlanService planService;
+    SubscriptionService subscriptionService;
 
     @GetMapping("/plans")
     public ResponseEntity<List<PlanResponse>> getAllActivePlans() {

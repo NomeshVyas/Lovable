@@ -4,7 +4,9 @@ import com.nomesh.projects.lovable_clone.dto.member.InviteMemberRequest;
 import com.nomesh.projects.lovable_clone.dto.member.MemberResponse;
 import com.nomesh.projects.lovable_clone.dto.member.UpdateMemberRoleRequest;
 import com.nomesh.projects.lovable_clone.service.ProjectMemberService;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +16,10 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/projects/{projectId}/members")
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ProjectMemberController {
 
-    private final ProjectMemberService projectMemberService;
+    ProjectMemberService projectMemberService;
 
     @GetMapping
     public ResponseEntity<List<MemberResponse>> getProjectMembers(@PathVariable Long projectId) {
@@ -43,12 +46,12 @@ public class ProjectMemberController {
         return ResponseEntity.ok(projectMemberService.updateMemberRole(projectId, memberId, request, userId));
     }
     @DeleteMapping("/{memberId}")
-    public ResponseEntity<Void> updateMemberRole(
+    public ResponseEntity<Void> deleteProjectMember(
             @PathVariable Long projectId,
             @PathVariable Long memberId
     ) {
         Long userId = 1L;
-        projectMemberService.deleteMemberRole(projectId, memberId, userId);
+        projectMemberService.deleteProjectMember(projectId, memberId, userId);
         return ResponseEntity.noContent().build();
     }
 }
