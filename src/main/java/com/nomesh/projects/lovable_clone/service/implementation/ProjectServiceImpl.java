@@ -4,7 +4,10 @@ import com.nomesh.projects.lovable_clone.dto.project.ProjectRequest;
 import com.nomesh.projects.lovable_clone.dto.project.ProjectResponse;
 import com.nomesh.projects.lovable_clone.dto.project.ProjectSummaryResponse;
 import com.nomesh.projects.lovable_clone.entity.Project;
+import com.nomesh.projects.lovable_clone.entity.ProjectMemberId;
+import com.nomesh.projects.lovable_clone.entity.ProjectRole;
 import com.nomesh.projects.lovable_clone.entity.User;
+import com.nomesh.projects.lovable_clone.exception.ResourceNotFoundException;
 import com.nomesh.projects.lovable_clone.mapper.ProjectMapper;
 import com.nomesh.projects.lovable_clone.repository.ProjectRepository;
 import com.nomesh.projects.lovable_clone.repository.UserRepository;
@@ -27,6 +30,7 @@ public class ProjectServiceImpl implements ProjectService {
     ProjectRepository projectRepository;
     UserRepository userRepository;
     ProjectMapper projectMapper;
+    ProjectMemberServiceImpl projectMemberService;
 
     @Override
     public List<ProjectSummaryResponse> getUserProjects(Long userId) {
@@ -44,23 +48,24 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectResponse createProject(Long userId, ProjectRequest request) {
-        User owner = userRepository.findById(userId).orElseThrow();
+        User owner = userRepository.findById(userId).orElseThrow(
+                () -> new ResourceNotFoundException("User", userId)
+        );
 
         Project project = Project.builder()
                 .name(request.name())
-                .owner(owner)
                 .build();
 
         project = projectRepository.save(project);
+
+        projectMemberService.addProjectMember(project, owner, ProjectRole.OWNER);
+
         return projectMapper.toProjectResponse(project);
     }
 
     @Override
     public ProjectResponse updateProject(Long id, ProjectRequest request, Long userId) {
         Project project = getAccessibleProjectById(id, userId);
-
-        if (!project.getOwner().getId().equals(userId))
-            throw new RuntimeException("Not allowerd to Update Project");
 
         project.setName(request.name());
         project.setUpdatedAt(Instant.now());
@@ -73,9 +78,6 @@ public class ProjectServiceImpl implements ProjectService {
     public void softDeleteProject(Long id, Long userId) {
         Project project = getAccessibleProjectById(id, userId);
 
-        if (!project.getOwner().getId().equals(userId))
-            throw new RuntimeException("Not allowed to delete Project");
-
         project.setDeletedAt(Instant.now());
         project.setUpdatedAt(Instant.now());
         projectRepository.save(project);
@@ -83,6 +85,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     // INTERNAL FUNCTIONS
     private Project getAccessibleProjectById(Long projectId, Long userId) {
-        return projectRepository.findAccessibleProjectbyId(projectId, userId).orElseThrow();
+        return projectRepository.findAccessibleProjectbyId(projectId, userId)
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Project", projectId)
+                );
     }
 }

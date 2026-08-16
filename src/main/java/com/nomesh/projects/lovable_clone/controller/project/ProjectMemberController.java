@@ -4,6 +4,7 @@ import com.nomesh.projects.lovable_clone.dto.member.InviteMemberRequest;
 import com.nomesh.projects.lovable_clone.dto.member.MemberResponse;
 import com.nomesh.projects.lovable_clone.dto.member.UpdateMemberRoleRequest;
 import com.nomesh.projects.lovable_clone.service.ProjectMemberService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -30,7 +31,7 @@ public class ProjectMemberController {
     @PostMapping
     public ResponseEntity<MemberResponse> inviteMember(
             @PathVariable Long projectId,
-            @RequestBody InviteMemberRequest request
+            @Valid @RequestBody InviteMemberRequest request
     ) {
         Long userId = 1L;
         return ResponseEntity.status(HttpStatus.CREATED).body(projectMemberService.inviteMember(projectId, request, userId));

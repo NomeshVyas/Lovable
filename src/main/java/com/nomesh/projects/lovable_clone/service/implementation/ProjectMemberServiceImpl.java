@@ -3,10 +3,8 @@ package com.nomesh.projects.lovable_clone.service.implementation;
 import com.nomesh.projects.lovable_clone.dto.member.InviteMemberRequest;
 import com.nomesh.projects.lovable_clone.dto.member.MemberResponse;
 import com.nomesh.projects.lovable_clone.dto.member.UpdateMemberRoleRequest;
-import com.nomesh.projects.lovable_clone.entity.Project;
-import com.nomesh.projects.lovable_clone.entity.ProjectMember;
-import com.nomesh.projects.lovable_clone.entity.ProjectMemberId;
-import com.nomesh.projects.lovable_clone.entity.User;
+import com.nomesh.projects.lovable_clone.entity.*;
+import com.nomesh.projects.lovable_clone.exception.ResourceNotFoundException;
 import com.nomesh.projects.lovable_clone.mapper.ProjectMemberMapper;
 import com.nomesh.projects.lovable_clone.repository.ProjectMemberRepository;
 import com.nomesh.projects.lovable_clone.repository.ProjectRepository;
@@ -35,59 +33,38 @@ public class ProjectMemberServiceImpl implements ProjectMemberService  {
 
     @Override
     public List<MemberResponse> getProjectMembers(Long projectId, Long userId) {
-        Project project = getAccessibleProjectById(projectId, userId);
-
-        List<MemberResponse> members = new ArrayList<>();
-        members.add(
-                projectMemberMapper.toMemberResponse(project.getOwner())
-        );
-        members.addAll(
-            projectMemberRepository.findByIdProjectId(projectId)
+        return projectMemberRepository.findByIdProjectId(projectId)
                 .stream()
-                .map(projectMemberMapper :: toMemberResponse)
-                .toList()
-        );
-        return members;
+                .map(projectMemberMapper::toMemberResponse)
+                .toList();
     }
 
     @Override
     public MemberResponse inviteMember(Long projectId, InviteMemberRequest request, Long userId) {
         Project project = getAccessibleProjectById(projectId, userId);
-
-        if(!project.getOwner().getId().equals(userId))
-            throw new RuntimeException("Not Allowed - only project owner can invite");
-
-        User invitee = userRepository.findByEmail(request.email()).orElseThrow();
+        User invitee = request.email() != null ?
+            userRepository.findByEmail(request.email())
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("User", request.email())
+                )
+            :
+            userRepository.findByUsername(request.username())
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("User", request.username())
+                );
 
         if (invitee.getId().equals(userId))
             throw new RuntimeException("Cannot invite yourself");
 
-        ProjectMemberId projectMemberId = new ProjectMemberId(projectId, invitee.getId());
-
-        if (projectMemberRepository.existsById(projectMemberId))
-            throw new RuntimeException("Cannot invite once again...");
-
-        ProjectMember member = ProjectMember.builder()
-                .id(projectMemberId)
-                .project(project)
-                .user(invitee)
-                .projectRole(request.role())
-                .invitedAt(Instant.now())
-                .build();
-
-        projectMemberRepository.save(member);
-        return projectMemberMapper.toMemberResponse(member);
+        return projectMemberMapper.toMemberResponse(addProjectMember(project, invitee, request.role()));
     }
 
     @Override
     public MemberResponse updateMemberRole(Long projectId, Long memberId, UpdateMemberRoleRequest request, Long userId) {
-        Project project = getAccessibleProjectById(projectId, userId);
-
-        if (!project.getOwner().getId().equals(userId))
-            throw new RuntimeException("Not Allowed - only owner can update project member's role");
-
         ProjectMemberId projectMemberId = new ProjectMemberId(projectId, memberId);
-        ProjectMember projectMember = projectMemberRepository.findById(projectMemberId).orElseThrow();
+        ProjectMember projectMember = projectMemberRepository.findById(projectMemberId).orElseThrow(
+                () -> new ResourceNotFoundException(projectMemberId)
+        );
         projectMember.setProjectRole(request.role());
 
         return projectMemberMapper.toMemberResponse(
@@ -97,11 +74,6 @@ public class ProjectMemberServiceImpl implements ProjectMemberService  {
 
     @Override
     public void removeProjectMember(Long projectId, Long memberId, Long userId) {
-        Project project = getAccessibleProjectById(projectId, userId);
-
-        if (!project.getOwner().getId().equals(userId))
-            throw new RuntimeException("Not Allowed - only owner can remove project member");
-
         ProjectMemberId projectMemberId = new ProjectMemberId(projectId, memberId);
 
         if (!projectMemberRepository.existsById(projectMemberId))
@@ -110,8 +82,29 @@ public class ProjectMemberServiceImpl implements ProjectMemberService  {
         projectMemberRepository.deleteById(projectMemberId);
     }
 
+    @Override
+    public ProjectMember addProjectMember(Project project, User user, ProjectRole projectRole) {
+        ProjectMemberId projectMemberId = new ProjectMemberId(project.getId(), user.getId());
+
+        if (projectMemberRepository.existsById(projectMemberId))
+            throw new RuntimeException("Cannot invite once again...");
+
+        ProjectMember member = ProjectMember.builder()
+                .id(projectMemberId)
+                .project(project)
+                .user(user)
+                .projectRole(projectRole)
+                .invitedAt(Instant.now())
+                .acceptedAt(projectRole == ProjectRole.OWNER ? Instant.now() : null)
+                .build();
+
+        return projectMemberRepository.save(member);
+    }
+
     // INTERNAL FUNCTIONS
     private Project getAccessibleProjectById(Long projectId, Long userId) {
-        return projectRepository.findAccessibleProjectbyId(projectId, userId).orElseThrow();
+        return projectRepository.findAccessibleProjectbyId(projectId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Project", projectId)
+                );
     }
 }

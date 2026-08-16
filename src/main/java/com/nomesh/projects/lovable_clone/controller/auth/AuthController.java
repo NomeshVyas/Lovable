@@ -6,6 +6,7 @@ import com.nomesh.projects.lovable_clone.dto.auth.SignupRequest;
 import com.nomesh.projects.lovable_clone.dto.auth.UserProfileResponse;
 import com.nomesh.projects.lovable_clone.service.AuthService;
 import com.nomesh.projects.lovable_clone.service.UserService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -24,12 +25,12 @@ public class AuthController {
     UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<AuthResponse> signup(@RequestBody SignupRequest request) {
+    public ResponseEntity<AuthResponse> signup(@Valid @RequestBody SignupRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.signup(request));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
     }
 
