@@ -5,8 +5,12 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.Instant;
+import java.util.Collection;
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,15 +20,19 @@ import java.time.Instant;
 @NoArgsConstructor
 @Builder
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
     String name;
-    String username;
-    String email;
     String password;
+
+    @Column(unique = true, nullable = false)
+    String username;
+
+    @Column(unique = true, nullable = false)
+    String email;
 
     @CreationTimestamp
     Instant createdAt;
@@ -32,4 +40,9 @@ public class User {
     @UpdateTimestamp
     Instant updatedAt;
     Instant deletedAt;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
 }

@@ -3,15 +3,13 @@ package com.nomesh.projects.lovable_clone.validation.login;
 import com.nomesh.projects.lovable_clone.dto.auth.LoginRequest;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import org.springframework.util.StringUtils;
 
-public class AtLeastOneIdentifierValidator implements ConstraintValidator<AtLeastOneIdentifier, LoginRequest> {
+public class LoginRequestValidator implements ConstraintValidator<ValidLoginRequest, LoginRequest> {
 
     @Override
     public boolean isValid(LoginRequest loginRequest, ConstraintValidatorContext context) {
         if (loginRequest == null) return true;
-        return (loginRequest.email() != null && !loginRequest.email() .isBlank())
-                ||
-                (loginRequest.username() != null && !loginRequest.username().isBlank());
-
+        return StringUtils.hasText(loginRequest.email()) ^ StringUtils.hasText(loginRequest.username());
     }
 }

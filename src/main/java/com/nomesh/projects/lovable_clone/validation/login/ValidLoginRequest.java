@@ -10,10 +10,10 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = AtLeastOneIdentifierValidator.class)
-public @interface AtLeastOneIdentifier {
+@Constraint(validatedBy = LoginRequestValidator.class)
+public @interface ValidLoginRequest {
 
-    String message() default "Username or email must be provided";
+    String message() default "Provide exactly one of email or username";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

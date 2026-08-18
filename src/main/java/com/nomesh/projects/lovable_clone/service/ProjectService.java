@@ -7,13 +7,13 @@ import com.nomesh.projects.lovable_clone.dto.project.ProjectSummaryResponse;
 import java.util.List;
 
 public interface ProjectService {
-    List<ProjectSummaryResponse> getUserProjects(Long userId);
+    List<ProjectSummaryResponse> getUserProjects();
 
-    ProjectResponse getUserProject(Long id, Long userId);
+    ProjectResponse getUserProject(Long id);
 
-    ProjectResponse createProject(Long userId, ProjectRequest request);
+    ProjectResponse createProject(ProjectRequest request);
 
-    ProjectResponse updateProject(Long id, ProjectRequest request, Long userId);
+    ProjectResponse updateProject(Long id, ProjectRequest request);
 
-    void softDeleteProject(Long id, Long userId);
+    void softDeleteProject(Long id);
 }
