@@ -11,6 +11,16 @@ services:
       - "5440:5432"
     volumes:
       - postgres_data:/var/lib/postgresql
+  stripe-cli:
+    image: stripe/stripe-cli:latest
+    command: >
+      listen
+        --forward-to ${HOST_BASE_URL}/webhooks/payment
+        --events checkout.session.completed,customer.subscription.created,customer.subscription.updated,customer.subscription.deleted,invoice.paid,invoice.payment_failed
+    environment:
+      STRIPE_API_KEY: ${STRIPE_SECRET_KEY}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
 volumes:
   postgres_data:

@@ -19,7 +19,6 @@ public class Subscription {
 
     SubscriptionStatus status;
 
-    String stripeCustomerId;
     String stripeSubscriptionId;
 
     Boolean cancelAtPeriodEnd = false;

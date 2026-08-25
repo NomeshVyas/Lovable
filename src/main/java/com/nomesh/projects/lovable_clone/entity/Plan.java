@@ -1,9 +1,6 @@
 package com.nomesh.projects.lovable_clone.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -18,13 +15,13 @@ public class Plan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    int price;
 
-    String stripePriceId;
+    @Column(unique = true)
+    String paymentPriceId;
 
-    Integer maxProjects;
-    Integer maxTokenPerDay;
-    Integer maxPreviews;
+    Long maxProjects;
+    Long maxTokenPerDay;
+    Long maxPreviews;
 
     Boolean unlimitedAi;
     Boolean active;

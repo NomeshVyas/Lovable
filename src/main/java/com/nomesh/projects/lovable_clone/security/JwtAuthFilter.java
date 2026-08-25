@@ -15,6 +15,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 import java.util.List;
@@ -27,33 +28,36 @@ import java.util.stream.Collectors;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     AuthUtil authUtil;
+    HandlerExceptionResolver handlerExceptionResolver;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
         log.info("incoming request: {}", request.getRequestURI());
 
-        final String requestHeaderToken = request.getHeader("Authorization");
-        if (requestHeaderToken == null || !requestHeaderToken.startsWith("Bearer ")){
+        try {
+            final String requestHeaderToken = request.getHeader("Authorization");
+            if (requestHeaderToken == null || !requestHeaderToken.startsWith("Bearer ")){
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            String jwtToken = requestHeaderToken.split("Bearer ")[1];
+
+            JwtUserPrincipal user = authUtil.verifyAccessToken(jwtToken);
+            List<GrantedAuthority> authorities = user.authorities().stream()
+                    .map(SimpleGrantedAuthority::new)
+                    .collect(Collectors.toList());
+
+            if (SecurityContextHolder.getContext().getAuthentication() == null) {
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                        user, null, authorities
+                );
+
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            }
             filterChain.doFilter(request, response);
-            return;
+        } catch (Exception e) {
+            handlerExceptionResolver.resolveException(request, response, null, e);
         }
-
-        String jwtToken = requestHeaderToken.split("Bearer ")[1];
-
-        JwtUserPrincipal user = authUtil.verifyAccessToken(jwtToken);
-        List<GrantedAuthority> authorities = user.authorities().stream()
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
-
-        if (SecurityContextHolder.getContext().getAuthentication() == null) {
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                    user, null, authorities
-            );
-
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        }
-        filterChain.doFilter(request, response);
-
     }
 }

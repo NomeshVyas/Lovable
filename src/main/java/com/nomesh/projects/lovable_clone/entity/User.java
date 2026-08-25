@@ -37,6 +37,9 @@ public class User implements UserDetails {
     @CreationTimestamp
     Instant createdAt;
 
+    @Column(unique = true)
+    String paymentCustomerId;
+
     @UpdateTimestamp
     Instant updatedAt;
     Instant deletedAt;
