@@ -21,7 +21,7 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/webhook")
+@RequestMapping("/webhooks")
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class PaymentWebhookController {
@@ -29,7 +29,7 @@ public class PaymentWebhookController {
     PaymentProcessor paymentProcessor;
     StripeProperties stripeProperties;
 
-    @PostMapping("/webhooks/payment")
+    @PostMapping("/payment")
     public ResponseEntity<String> handlePaymentWebhooks(
             @RequestBody String payload,
             @RequestHeader("Stripe-Signature") String signatureHeader
@@ -51,8 +51,8 @@ public class PaymentWebhookController {
                         return ResponseEntity.ok().build();
                     }
                 } catch (Exception exception) {
-                    log.error("Unsafe deserialization failed for event {}: {}", event.getType(), exception.getMessage());
-                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Deserialization failed for stripe webhook event");
+                    log.error("Unsafe deserialization failed for event {}", event.getType(), exception);
+                    return ResponseEntity.ok().build();
                 }
             }
 
@@ -64,7 +64,8 @@ public class PaymentWebhookController {
             return ResponseEntity.ok().build();
 
         } catch (SignatureVerificationException e) {
-            throw new RuntimeException(e);
+            log.warn("Invalid Stripe webhook signature", e);
+            return ResponseEntity.badRequest().body("Invalid signature");
         }
     }
 }

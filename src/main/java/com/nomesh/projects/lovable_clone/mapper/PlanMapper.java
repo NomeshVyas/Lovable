@@ -9,5 +9,6 @@ import org.mapstruct.Mapper;
 public interface PlanMapper {
 
     Plan toPlan(CreatePlanRequest planRequest);
+
     PlanResponse toPlanResponse(Plan plan);
 }

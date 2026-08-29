@@ -88,7 +88,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService  {
         ProjectMemberId projectMemberId = new ProjectMemberId(projectId, memberId);
 
         if (!projectMemberRepository.existsById(projectMemberId))
-            throw new RuntimeException("Not Found - member not found in project");
+            throw new ResourceNotFoundException(projectMemberId);
 
         projectMemberRepository.deleteById(projectMemberId);
     }
@@ -117,6 +117,6 @@ public class ProjectMemberServiceImpl implements ProjectMemberService  {
         Long userId = authUtil.getCurrentUserId();
         return projectRepository.findAccessibleProjectbyId(projectId, userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project", projectId)
-                );
+            );
     }
 }

@@ -1,6 +1,7 @@
 package com.nomesh.projects.lovable_clone.repository;
 
 import com.nomesh.projects.lovable_clone.entity.User;
+import com.nomesh.projects.lovable_clone.exception.ResourceNotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,4 +24,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
         WHERE u.id = :userId
     """)
     Optional<String> findEmailById(@Param("userId") Long id);
+
+    default User getByIdOrThrow(Long id) {
+        return findById(id).orElseThrow(() -> new ResourceNotFoundException("User", id));
+    }
 }
