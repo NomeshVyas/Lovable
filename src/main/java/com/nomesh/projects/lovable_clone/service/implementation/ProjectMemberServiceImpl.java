@@ -11,15 +11,14 @@ import com.nomesh.projects.lovable_clone.repository.ProjectRepository;
 import com.nomesh.projects.lovable_clone.repository.UserRepository;
 import com.nomesh.projects.lovable_clone.security.AuthUtil;
 import com.nomesh.projects.lovable_clone.service.ProjectMemberService;
-import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -35,6 +34,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService  {
     AuthUtil authUtil;
 
     @Override
+    @Transactional(readOnly = true)
     @PreAuthorize("@security.canViewProjectMembers(#projectId)")
     public List<MemberResponse> getProjectMembers(Long projectId) {
         Long userId = authUtil.getCurrentUserId();

@@ -33,7 +33,7 @@ public class AuthUtil {
                 .claim("email", user.getEmail())
                 .claim("username", user.getUsername())
                 .claim(
-                        "roles",
+                        "authorities",
                         user.getAuthorities().stream()
                                 .map(GrantedAuthority::getAuthority)
                                 .toList()
@@ -55,12 +55,19 @@ public class AuthUtil {
         Object rolesClaim = claims.get("authorities");
 
         List<String> authorities = rolesClaim instanceof List<?> list
-                ? list.stream()
-                .map(String::valueOf)
-                .toList()
-                : List.of();
+                ?
+                    list.stream()
+                    .map(String::valueOf)
+                    .toList()
+                :
+                    List.of();
 
-        return new JwtUserPrincipal(userId, claims.get("email", String.class), claims.get("username", String.class),  authorities);
+        return new JwtUserPrincipal(
+                userId,
+                claims.get("email", String.class),
+                claims.get("username", String.class),
+                authorities
+        );
     }
 
     public Long getCurrentUserId() {

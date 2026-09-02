@@ -3,6 +3,7 @@ package com.nomesh.projects.lovable_clone.service.implementation;
 import com.nomesh.projects.lovable_clone.dto.auth.AuthResponse;
 import com.nomesh.projects.lovable_clone.dto.auth.LoginRequest;
 import com.nomesh.projects.lovable_clone.dto.auth.SignupRequest;
+import com.nomesh.projects.lovable_clone.entity.SystemRole;
 import com.nomesh.projects.lovable_clone.entity.User;
 import com.nomesh.projects.lovable_clone.exception.BadRequestException;
 import com.nomesh.projects.lovable_clone.mapper.AuthMapper;
@@ -10,7 +11,6 @@ import com.nomesh.projects.lovable_clone.mapper.UserMapper;
 import com.nomesh.projects.lovable_clone.repository.UserRepository;
 import com.nomesh.projects.lovable_clone.security.AuthUtil;
 import com.nomesh.projects.lovable_clone.service.AuthService;
-import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -19,6 +19,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 @Service
@@ -42,8 +43,10 @@ public class AuthServiceImpl implements AuthService {
             throw new BadRequestException("Account already exist with username: " + request.username());
 
         User user = userMapper.toEntity(request);
+        user.setEmail(request.email().toLowerCase());
         user.setPassword(passwordEncoder.encode(request.password()));
         user.setUsername(StringUtils.hasText(request.username()) ? request.username() : request.email());
+        user.setSystemRole(SystemRole.USER);
         user = userRepository.save(user);
 
         return authMapper.toAuthResponse(
@@ -53,7 +56,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponse login(LoginRequest request) {
-        String identifier = StringUtils.hasText(request.email()) ? request.email() : request.username();
+        String identifier = StringUtils.hasText(request.email()) ? request.email().toLowerCase() : request.username();
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(identifier, request.password())
         );

@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
@@ -19,11 +20,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     UserRepository userRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public UserProfileResponse getProfile(Long userId) {
         return null;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String identifier) throws UsernameNotFoundException {
         return userRepository.findByUsernameOrEmail(identifier, identifier).orElseThrow(
                 () -> new UsernameNotFoundException("Username not found for: " + identifier)

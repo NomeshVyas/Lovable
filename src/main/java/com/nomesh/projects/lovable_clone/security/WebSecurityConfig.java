@@ -1,5 +1,6 @@
 package com.nomesh.projects.lovable_clone.security;
 
+import com.nomesh.projects.lovable_clone.entity.SystemRole;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -30,7 +31,13 @@ public class WebSecurityConfig {
                 .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
                         auth -> auth
-                                .requestMatchers("/api/auth/**", "/webhooks/**").permitAll()
+                                .requestMatchers(
+                                        "/api/auth/**",
+                                        "/webhooks/**",
+                                        "/api/plans"
+                                )
+                                .permitAll()
+                                .requestMatchers("/api/admin/**").hasRole(SystemRole.ADMIN.name())
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

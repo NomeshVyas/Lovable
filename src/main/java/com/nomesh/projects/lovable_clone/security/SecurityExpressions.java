@@ -1,11 +1,15 @@
 package com.nomesh.projects.lovable_clone.security;
 
+import com.nomesh.projects.lovable_clone.dto.jwt_config.JwtUserPrincipal;
 import com.nomesh.projects.lovable_clone.entity.ProjectPermission;
-import com.nomesh.projects.lovable_clone.entity.ProjectRole;
+import com.nomesh.projects.lovable_clone.entity.SystemPermission;
+import com.nomesh.projects.lovable_clone.entity.SystemRole;
 import com.nomesh.projects.lovable_clone.repository.ProjectMemberRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component("security")
@@ -17,26 +21,49 @@ public class SecurityExpressions {
     AuthUtil authUtil;
 
     public boolean canViewProject(Long projectId) {
-        return hasPermission(projectId, ProjectPermission.VIEW);
+        return hasPermissionForProject(projectId, ProjectPermission.VIEW);
     }
 
     public boolean canEditProject(Long projectId) {
-        return hasPermission(projectId, ProjectPermission.EDIT);
+        return hasPermissionForProject(projectId, ProjectPermission.EDIT);
     }
 
     public boolean canDeleteProject(Long projectId) {
-        return hasPermission(projectId, ProjectPermission.DELETE);
+        return hasPermissionForProject(projectId, ProjectPermission.DELETE);
     }
 
     public boolean canViewProjectMembers(Long projectId) {
-        return hasPermission(projectId, ProjectPermission.VIEW_MEMBERS);
+        return hasPermissionForProject(projectId, ProjectPermission.VIEW_MEMBERS);
     }
 
     public boolean canManageProjectMembers(Long projectId) {
-        return hasPermission(projectId, ProjectPermission.MANAGE_MEMBERS);
+        return hasPermissionForProject(projectId, ProjectPermission.MANAGE_MEMBERS);
     }
 
-    private boolean hasPermission(Long projectId, ProjectPermission permission) {
+    public boolean canManagePlans() {
+        return hasSystemPermission(SystemPermission.MANAGE_PLANS);
+    }
+
+    private boolean hasSystemPermission(SystemPermission systemPermission) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null)
+            return false;
+
+//        boolean check = (authentication.getPrincipal() instanceof JwtUserPrincipal principal);
+        if (!(authentication.getPrincipal() instanceof JwtUserPrincipal principal))
+            return false;
+        return principal.authorities()
+                .stream()
+                .map(
+                        authority -> authority.replace("ROLE_", "")
+                )
+                .map(
+                        SystemRole::valueOf
+                )
+                .anyMatch(role -> role.getPermissions().contains(systemPermission));
+    }
+
+    private boolean hasPermissionForProject(Long projectId, ProjectPermission permission) {
         Long userId = authUtil.getCurrentUserId();
         return projectMemberRepository.findProjectRoleByProjectIdAndUserId(projectId, userId)
                 .map(role -> role.getPermissions().contains(permission))
