@@ -1,7 +1,6 @@
 package com.nomesh.projects.lovable_clone.security;
 
 import com.nomesh.projects.lovable_clone.entity.ProjectPermission;
-import com.nomesh.projects.lovable_clone.entity.ProjectRole;
 import com.nomesh.projects.lovable_clone.repository.ProjectMemberRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -17,26 +16,26 @@ public class SecurityExpressions {
     AuthUtil authUtil;
 
     public boolean canViewProject(Long projectId) {
-        return hasPermission(projectId, ProjectPermission.VIEW);
+        return hasPermissionForProject(projectId, ProjectPermission.VIEW);
     }
 
     public boolean canEditProject(Long projectId) {
-        return hasPermission(projectId, ProjectPermission.EDIT);
+        return hasPermissionForProject(projectId, ProjectPermission.EDIT);
     }
 
     public boolean canDeleteProject(Long projectId) {
-        return hasPermission(projectId, ProjectPermission.DELETE);
+        return hasPermissionForProject(projectId, ProjectPermission.DELETE);
     }
 
     public boolean canViewProjectMembers(Long projectId) {
-        return hasPermission(projectId, ProjectPermission.VIEW_MEMBERS);
+        return hasPermissionForProject(projectId, ProjectPermission.VIEW_MEMBERS);
     }
 
     public boolean canManageProjectMembers(Long projectId) {
-        return hasPermission(projectId, ProjectPermission.MANAGE_MEMBERS);
+        return hasPermissionForProject(projectId, ProjectPermission.MANAGE_MEMBERS);
     }
 
-    private boolean hasPermission(Long projectId, ProjectPermission permission) {
+    private boolean hasPermissionForProject(Long projectId, ProjectPermission permission) {
         Long userId = authUtil.getCurrentUserId();
         return projectMemberRepository.findProjectRoleByProjectIdAndUserId(projectId, userId)
                 .map(role -> role.getPermissions().contains(permission))

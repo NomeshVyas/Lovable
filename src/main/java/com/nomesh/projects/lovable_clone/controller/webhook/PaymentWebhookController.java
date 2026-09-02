@@ -1,7 +1,7 @@
 package com.nomesh.projects.lovable_clone.controller.webhook;
 
 import com.nomesh.projects.lovable_clone.config.StripeProperties;
-import com.nomesh.projects.lovable_clone.service.PaymentProcessor;
+import com.nomesh.projects.lovable_clone.service.PaymentEventHandlerService;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Event;
 import com.stripe.model.EventDataObjectDeserializer;
@@ -12,7 +12,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +25,7 @@ import java.util.Map;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class PaymentWebhookController {
 
-    PaymentProcessor paymentProcessor;
+    PaymentEventHandlerService paymentEventHandler;
     StripeProperties stripeProperties;
 
     @PostMapping("/payment")
@@ -60,7 +59,7 @@ public class PaymentWebhookController {
             if (stripeObject instanceof Session session)
                 metadata = session.getMetadata();
 
-            paymentProcessor.handleWebhookEvent(event.getType(), stripeObject, metadata);
+            paymentEventHandler.handleWebhookEvent(event.getType(), stripeObject, metadata);
             return ResponseEntity.ok().build();
 
         } catch (SignatureVerificationException e) {

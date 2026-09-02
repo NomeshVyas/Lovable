@@ -59,6 +59,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(apiError.status()).body(apiError);
     }
 
+    @ExceptionHandler(IncorrectResultSizeDataAccessException.class)
+    public ResponseEntity<ApiError> handleIncorrectResultSizeDataAccessException(IncorrectResultSizeDataAccessException exception) {
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, exception.getMessage());
+        log.error(apiError.toString(), exception);
+        return ResponseEntity.status(apiError.status()).body(apiError);
+    }
+
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<ApiError> handleUsernameNotFoundException(UsernameNotFoundException exception) {
         ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, "Username not found: " + exception.getMessage());

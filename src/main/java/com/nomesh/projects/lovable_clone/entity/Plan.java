@@ -11,18 +11,26 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @Builder
 @Entity
+@Table(name = "plans")
 public class Plan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Column(nullable = false, unique = true)
+    String name;
+
     @Column(unique = true)
     String paymentPriceId;
 
+    @Column(nullable = false)
     Long maxProjects;
     Long maxTokenPerDay;
     Long maxPreviews;
 
-    Boolean unlimitedAi;
-    Boolean active;
+    @Builder.Default
+    Boolean unlimitedAi = false;
+
+    @Builder.Default
+    Boolean active = true;
 }

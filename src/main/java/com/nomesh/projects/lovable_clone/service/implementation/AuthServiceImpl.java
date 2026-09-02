@@ -10,7 +10,6 @@ import com.nomesh.projects.lovable_clone.mapper.UserMapper;
 import com.nomesh.projects.lovable_clone.repository.UserRepository;
 import com.nomesh.projects.lovable_clone.security.AuthUtil;
 import com.nomesh.projects.lovable_clone.service.AuthService;
-import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -19,6 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 @Service

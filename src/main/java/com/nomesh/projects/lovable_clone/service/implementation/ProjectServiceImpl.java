@@ -4,18 +4,20 @@ import com.nomesh.projects.lovable_clone.dto.project.ProjectRequest;
 import com.nomesh.projects.lovable_clone.dto.project.ProjectResponse;
 import com.nomesh.projects.lovable_clone.dto.project.ProjectSummaryResponse;
 import com.nomesh.projects.lovable_clone.entity.*;
+import com.nomesh.projects.lovable_clone.exception.BadRequestException;
 import com.nomesh.projects.lovable_clone.exception.ResourceNotFoundException;
 import com.nomesh.projects.lovable_clone.mapper.ProjectMapper;
 import com.nomesh.projects.lovable_clone.repository.ProjectRepository;
 import com.nomesh.projects.lovable_clone.repository.UserRepository;
 import com.nomesh.projects.lovable_clone.security.AuthUtil;
 import com.nomesh.projects.lovable_clone.service.ProjectService;
-import jakarta.transaction.Transactional;
+import com.nomesh.projects.lovable_clone.service.SubscriptionService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
@@ -31,8 +33,10 @@ public class ProjectServiceImpl implements ProjectService {
     ProjectMapper projectMapper;
     ProjectMemberServiceImpl projectMemberService;
     AuthUtil authUtil;
+    SubscriptionService subscriptionService;
 
     @Override
+    @Transactional(readOnly = true)
     public List<ProjectSummaryResponse> getUserProjects() {
         Long userId = authUtil.getCurrentUserId();
         return projectMapper.toListOfProjectSummaryResponse(
@@ -41,6 +45,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     @PreAuthorize("@security.canViewProject(#projectId)")
     public ProjectResponse getUserProject(Long projectId) {
         Long userId = authUtil.getCurrentUserId();
@@ -51,6 +56,10 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectResponse createProject(ProjectRequest request) {
+        if (!subscriptionService.canCreateNewProject()) {
+            throw new BadRequestException("User cannot create a new project with current plan, Upgrade plan now.");
+        }
+
         Long userId = authUtil.getCurrentUserId();
         User owner = userRepository.getReferenceById(userId);
 

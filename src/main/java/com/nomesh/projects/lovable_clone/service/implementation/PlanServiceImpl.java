@@ -10,26 +10,30 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@Transactional
 public class PlanServiceImpl implements PlanService {
 
     PlanMapper planMapper;
     PlanRepository planRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<PlanResponse> getAllActivePlans() {
-        return List.of();
+        return planMapper.toPlanResponseList(
+                planRepository.findByActiveTrueAndPaymentPriceIdIsNotNull()
+        );
     }
 
     @Override
     public PlanResponse createPlan(CreatePlanRequest createPlanRequest) {
         Plan plan = planMapper.toPlan(createPlanRequest);
-        plan.setActive(true);
         return planMapper.toPlanResponse(
                 planRepository.save(plan)
         );
