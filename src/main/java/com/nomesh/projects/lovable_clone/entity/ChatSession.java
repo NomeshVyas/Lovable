@@ -1,26 +1,44 @@
 package com.nomesh.projects.lovable_clone.entity;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-//@AllArgsConstructor
-//@NoArgsConstructor
-//@Builder
-//@Entity
+@Entity
+@Table(name = "chat_sessions")
 public class ChatSession {
+
+    @EmbeddedId
+    ChatSessionId chatSessionId;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @MapsId("projectId")
+    @JoinColumn(name = "project_id", nullable = false, updatable = false)
     Project project;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @MapsId("userId")
+    @JoinColumn(name = "user_id", nullable = false, updatable = false)
     User user;
 
     String title;
 
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
     Instant createdAt;
+
+    @UpdateTimestamp
     Instant updatedAt;
+
     Instant deletedAt;
 }
