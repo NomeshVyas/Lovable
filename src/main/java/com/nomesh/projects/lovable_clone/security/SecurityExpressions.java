@@ -49,7 +49,6 @@ public class SecurityExpressions {
         if (authentication == null)
             return false;
 
-//        boolean check = (authentication.getPrincipal() instanceof JwtUserPrincipal principal);
         if (!(authentication.getPrincipal() instanceof JwtUserPrincipal principal))
             return false;
         return principal.authorities()
@@ -57,9 +56,7 @@ public class SecurityExpressions {
                 .map(
                         authority -> authority.replace("ROLE_", "")
                 )
-                .map(
-                        SystemRole::valueOf
-                )
+                .map(SystemRole::valueOf)
                 .anyMatch(role -> role.getPermissions().contains(systemPermission));
     }
 

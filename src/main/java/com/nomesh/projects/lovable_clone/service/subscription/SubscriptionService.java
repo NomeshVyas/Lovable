@@ -1,4 +1,4 @@
-package com.nomesh.projects.lovable_clone.service;
+package com.nomesh.projects.lovable_clone.service.subscription;
 
 import com.nomesh.projects.lovable_clone.dto.subscription.SubscriptionResponse;
 import com.nomesh.projects.lovable_clone.entity.SubscriptionStatus;

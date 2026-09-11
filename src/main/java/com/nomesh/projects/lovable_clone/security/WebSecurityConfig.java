@@ -32,7 +32,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(
                         auth -> auth
                                 .requestMatchers(
-                                        "/api/auth/**",
+                                        "/api/auth/signup",
+                                        "/api/auth/login",
                                         "/webhooks/**",
                                         "/api/plans"
                                 )

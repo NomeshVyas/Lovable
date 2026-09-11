@@ -1,8 +1,7 @@
-package com.nomesh.projects.lovable_clone.service.implementation;
+package com.nomesh.projects.lovable_clone.service.usage;
 
 import com.nomesh.projects.lovable_clone.dto.plan.PlanLimitsResponse;
 import com.nomesh.projects.lovable_clone.dto.usage.UsageTodayResponse;
-import com.nomesh.projects.lovable_clone.service.UsageService;
 import org.springframework.stereotype.Service;
 
 @Service

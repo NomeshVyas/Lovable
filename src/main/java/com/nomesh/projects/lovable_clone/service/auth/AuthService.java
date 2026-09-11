@@ -1,4 +1,4 @@
-package com.nomesh.projects.lovable_clone.service;
+package com.nomesh.projects.lovable_clone.service.auth;
 
 import com.nomesh.projects.lovable_clone.dto.auth.AuthResponse;
 import com.nomesh.projects.lovable_clone.dto.auth.LoginRequest;

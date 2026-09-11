@@ -1,4 +1,4 @@
-package com.nomesh.projects.lovable_clone.service;
+package com.nomesh.projects.lovable_clone.service.file;
 
 import com.nomesh.projects.lovable_clone.dto.file.FileContentResponse;
 import com.nomesh.projects.lovable_clone.dto.file.FileNode;

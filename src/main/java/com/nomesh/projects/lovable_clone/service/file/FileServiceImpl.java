@@ -1,8 +1,7 @@
-package com.nomesh.projects.lovable_clone.service.implementation;
+package com.nomesh.projects.lovable_clone.service.file;
 
 import com.nomesh.projects.lovable_clone.dto.file.FileContentResponse;
 import com.nomesh.projects.lovable_clone.dto.file.FileNode;
-import com.nomesh.projects.lovable_clone.service.FileService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

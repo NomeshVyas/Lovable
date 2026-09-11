@@ -2,7 +2,7 @@ package com.nomesh.projects.lovable_clone.controller.file;
 
 import com.nomesh.projects.lovable_clone.dto.file.FileContentResponse;
 import com.nomesh.projects.lovable_clone.dto.file.FileNode;
-import com.nomesh.projects.lovable_clone.service.FileService;
+import com.nomesh.projects.lovable_clone.service.file.FileService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

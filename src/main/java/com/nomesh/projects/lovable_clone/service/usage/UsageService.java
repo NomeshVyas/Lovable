@@ -1,4 +1,4 @@
-package com.nomesh.projects.lovable_clone.service;
+package com.nomesh.projects.lovable_clone.service.usage;
 
 import com.nomesh.projects.lovable_clone.dto.plan.PlanLimitsResponse;
 import com.nomesh.projects.lovable_clone.dto.usage.UsageTodayResponse;

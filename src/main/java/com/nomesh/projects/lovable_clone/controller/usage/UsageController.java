@@ -2,7 +2,7 @@ package com.nomesh.projects.lovable_clone.controller.usage;
 
 import com.nomesh.projects.lovable_clone.dto.plan.PlanLimitsResponse;
 import com.nomesh.projects.lovable_clone.dto.usage.UsageTodayResponse;
-import com.nomesh.projects.lovable_clone.service.UsageService;
+import com.nomesh.projects.lovable_clone.service.usage.UsageService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

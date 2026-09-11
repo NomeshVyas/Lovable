@@ -1,4 +1,4 @@
-package com.nomesh.projects.lovable_clone.service.implementation;
+package com.nomesh.projects.lovable_clone.service.auth;
 
 import com.nomesh.projects.lovable_clone.dto.auth.AuthResponse;
 import com.nomesh.projects.lovable_clone.dto.auth.LoginRequest;
@@ -10,7 +10,6 @@ import com.nomesh.projects.lovable_clone.mapper.AuthMapper;
 import com.nomesh.projects.lovable_clone.mapper.UserMapper;
 import com.nomesh.projects.lovable_clone.repository.UserRepository;
 import com.nomesh.projects.lovable_clone.security.AuthUtil;
-import com.nomesh.projects.lovable_clone.service.AuthService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

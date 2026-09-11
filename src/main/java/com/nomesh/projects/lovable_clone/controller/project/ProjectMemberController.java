@@ -3,7 +3,7 @@ package com.nomesh.projects.lovable_clone.controller.project;
 import com.nomesh.projects.lovable_clone.dto.member.InviteMemberRequest;
 import com.nomesh.projects.lovable_clone.dto.member.MemberResponse;
 import com.nomesh.projects.lovable_clone.dto.member.UpdateMemberRoleRequest;
-import com.nomesh.projects.lovable_clone.service.ProjectMemberService;
+import com.nomesh.projects.lovable_clone.service.project.ProjectMemberService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

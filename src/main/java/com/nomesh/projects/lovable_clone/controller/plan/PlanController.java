@@ -1,7 +1,7 @@
 package com.nomesh.projects.lovable_clone.controller.plan;
 
 import com.nomesh.projects.lovable_clone.dto.plan.PlanResponse;
-import com.nomesh.projects.lovable_clone.service.PlanService;
+import com.nomesh.projects.lovable_clone.service.plan.PlanService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

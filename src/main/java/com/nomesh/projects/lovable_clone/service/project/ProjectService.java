@@ -1,4 +1,4 @@
-package com.nomesh.projects.lovable_clone.service;
+package com.nomesh.projects.lovable_clone.service.project;
 
 import com.nomesh.projects.lovable_clone.dto.project.ProjectRequest;
 import com.nomesh.projects.lovable_clone.dto.project.ProjectResponse;

@@ -1,11 +1,10 @@
-package com.nomesh.projects.lovable_clone.service.implementation;
+package com.nomesh.projects.lovable_clone.service.plan;
 
 import com.nomesh.projects.lovable_clone.dto.plan.CreatePlanRequest;
 import com.nomesh.projects.lovable_clone.dto.plan.PlanResponse;
 import com.nomesh.projects.lovable_clone.entity.Plan;
 import com.nomesh.projects.lovable_clone.mapper.PlanMapper;
 import com.nomesh.projects.lovable_clone.repository.PlanRepository;
-import com.nomesh.projects.lovable_clone.service.PlanService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

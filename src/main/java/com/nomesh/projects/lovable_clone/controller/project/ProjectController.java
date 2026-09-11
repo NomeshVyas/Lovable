@@ -3,7 +3,7 @@ package com.nomesh.projects.lovable_clone.controller.project;
 import com.nomesh.projects.lovable_clone.dto.project.ProjectRequest;
 import com.nomesh.projects.lovable_clone.dto.project.ProjectResponse;
 import com.nomesh.projects.lovable_clone.dto.project.ProjectSummaryResponse;
-import com.nomesh.projects.lovable_clone.service.ProjectService;
+import com.nomesh.projects.lovable_clone.service.project.ProjectService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

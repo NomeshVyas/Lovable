@@ -1,4 +1,4 @@
-package com.nomesh.projects.lovable_clone.service.implementation;
+package com.nomesh.projects.lovable_clone.service.project;
 
 import com.nomesh.projects.lovable_clone.dto.member.InviteMemberRequest;
 import com.nomesh.projects.lovable_clone.dto.member.MemberResponse;
@@ -10,7 +10,6 @@ import com.nomesh.projects.lovable_clone.repository.ProjectMemberRepository;
 import com.nomesh.projects.lovable_clone.repository.ProjectRepository;
 import com.nomesh.projects.lovable_clone.repository.UserRepository;
 import com.nomesh.projects.lovable_clone.security.AuthUtil;
-import com.nomesh.projects.lovable_clone.service.ProjectMemberService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

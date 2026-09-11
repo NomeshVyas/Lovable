@@ -1,4 +1,4 @@
-package com.nomesh.projects.lovable_clone.service.implementation;
+package com.nomesh.projects.lovable_clone.service.subscription;
 
 import com.nomesh.projects.lovable_clone.dto.subscription.SubscriptionResponse;
 import com.nomesh.projects.lovable_clone.entity.Plan;
@@ -13,7 +13,6 @@ import com.nomesh.projects.lovable_clone.repository.ProjectMemberRepository;
 import com.nomesh.projects.lovable_clone.repository.SubscriptionRepository;
 import com.nomesh.projects.lovable_clone.repository.UserRepository;
 import com.nomesh.projects.lovable_clone.security.AuthUtil;
-import com.nomesh.projects.lovable_clone.service.SubscriptionService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

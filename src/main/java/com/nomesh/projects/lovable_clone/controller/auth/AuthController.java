@@ -4,8 +4,8 @@ import com.nomesh.projects.lovable_clone.dto.auth.AuthResponse;
 import com.nomesh.projects.lovable_clone.dto.auth.LoginRequest;
 import com.nomesh.projects.lovable_clone.dto.auth.SignupRequest;
 import com.nomesh.projects.lovable_clone.dto.auth.UserProfileResponse;
-import com.nomesh.projects.lovable_clone.service.AuthService;
-import com.nomesh.projects.lovable_clone.service.UserService;
+import com.nomesh.projects.lovable_clone.service.auth.AuthService;
+import com.nomesh.projects.lovable_clone.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +36,6 @@ public class AuthController {
 
     @GetMapping("/me")
     public ResponseEntity<UserProfileResponse> getMyProfile() {
-        Long userId = 1L;
-        return ResponseEntity.ok(userService.getProfile(userId));
+        return ResponseEntity.ok(userService.getMyProfile());
     }
 }

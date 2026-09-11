@@ -2,7 +2,7 @@ package com.nomesh.projects.lovable_clone.controller.plan;
 
 import com.nomesh.projects.lovable_clone.dto.plan.CreatePlanRequest;
 import com.nomesh.projects.lovable_clone.dto.plan.PlanResponse;
-import com.nomesh.projects.lovable_clone.service.PlanService;
+import com.nomesh.projects.lovable_clone.service.plan.PlanService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
