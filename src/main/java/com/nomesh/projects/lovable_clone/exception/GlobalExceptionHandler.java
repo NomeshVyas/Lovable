@@ -107,4 +107,11 @@ public class GlobalExceptionHandler {
         log.error(apiError.toString(), exception);
         return ResponseEntity.status(apiError.status()).body(apiError);
     }
+
+    @ExceptionHandler(StorageException.class)
+    public ResponseEntity<ApiError> handleStorageException(StorageException exception) {
+        ApiError apiError = new ApiError(HttpStatus.BAD_GATEWAY, "File storage failed: " + exception.getMessage());
+        log.error(apiError.toString(), exception);
+        return ResponseEntity.status(apiError.status()).body(apiError);
+    }
 }

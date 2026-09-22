@@ -2,7 +2,7 @@ package com.nomesh.projects.lovable_clone.controller.file;
 
 import com.nomesh.projects.lovable_clone.dto.file.FileContentResponse;
 import com.nomesh.projects.lovable_clone.dto.file.FileNode;
-import com.nomesh.projects.lovable_clone.service.file.FileService;
+import com.nomesh.projects.lovable_clone.service.file.ProjectFileService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -20,17 +20,15 @@ import java.util.List;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class FileController {
 
-    FileService fileService;
+    ProjectFileService projectFileService;
 
     @GetMapping
     public ResponseEntity<List<FileNode>> getFileTree(@PathVariable Long projectId) {
-        Long userId = 1L;
-        return ResponseEntity.ok(fileService.getFileTree(projectId, userId));
+        return ResponseEntity.ok(projectFileService.getFileTree(projectId));
     }
 
     @GetMapping("/{*path}")
     public ResponseEntity<FileContentResponse> getFile(@PathVariable Long projectId, @PathVariable String path) {
-        Long userId = 1L;
-        return ResponseEntity.ok(fileService.getFile(projectId, path, userId));
+        return ResponseEntity.ok(projectFileService.getFile(projectId, path));
     }
 }

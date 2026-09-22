@@ -3,6 +3,7 @@ name: lovable
 services:
   postgres:
     image: postgres:18
+    container_name: postgres-db
     environment:
       POSTGRES_DB: lovable
       POSTGRES_USER: ${POSTGRES_USER}
@@ -11,8 +12,11 @@ services:
       - "5440:5432"
     volumes:
       - postgres_data:/var/lib/postgresql
+    restart: unless-stopped
+
   stripe-cli:
     image: stripe/stripe-cli:latest
+    container_name: stripe-cli
     command: >
       listen
         --forward-to ${HOST_BASE_URL}/webhooks/payment
@@ -21,6 +25,36 @@ services:
       STRIPE_API_KEY: ${STRIPE_SECRET_KEY}
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+  pgvector:
+    image: pgvector/pgvector:0.8.1-pg18-trixie
+    container_name: pgvector-db
+    environment:
+      POSTGRES_DB: pgvector_test
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5441:5432"
+    volumes:
+      - pgvector-data:/var/lib/postgresql
+    restart: unless-stopped
+
+  minio:
+    image: quay.io/minio/minio:latest
+    container_name: minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD}
+    ports:
+      - "9000:9000"   # API
+      - "9001:9001"   # Console
+    volumes:
+      - minio-data:/data
+    restart: unless-stopped
 
 volumes:
   postgres_data:
+  pgvector-data:
+  minio-data:

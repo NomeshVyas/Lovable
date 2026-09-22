@@ -1,6 +1,7 @@
 package com.nomesh.projects.lovable_clone.repository;
 
 import com.nomesh.projects.lovable_clone.entity.Project;
+import com.nomesh.projects.lovable_clone.exception.ResourceNotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -42,4 +43,8 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
         @Param("projectId") Long projectId,
         @Param("userId") Long userId
     );
+
+    default Project getByIdOrThrow(Long projectId) {
+        return findById(projectId).orElseThrow(() -> new ResourceNotFoundException("Project", projectId));
+    }
 }

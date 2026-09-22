@@ -4,6 +4,7 @@ import com.nomesh.projects.lovable_clone.dto.member.InviteMemberRequest;
 import com.nomesh.projects.lovable_clone.dto.member.MemberResponse;
 import com.nomesh.projects.lovable_clone.dto.member.UpdateMemberRoleRequest;
 import com.nomesh.projects.lovable_clone.entity.*;
+import com.nomesh.projects.lovable_clone.exception.BadRequestException;
 import com.nomesh.projects.lovable_clone.exception.ResourceNotFoundException;
 import com.nomesh.projects.lovable_clone.mapper.ProjectMemberMapper;
 import com.nomesh.projects.lovable_clone.repository.ProjectMemberRepository;
@@ -24,7 +25,7 @@ import java.util.List;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 @Transactional
-public class ProjectMemberServiceImpl implements ProjectMemberService  {
+public class ProjectMemberServiceImpl implements ProjectMemberService {
 
     ProjectMemberRepository projectMemberRepository;
     ProjectRepository projectRepository;
@@ -60,7 +61,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService  {
                 );
 
         if (invitee.getId().equals(userId))
-            throw new RuntimeException("Cannot invite yourself");
+            throw new BadRequestException("Cannot invite yourself");
 
         return projectMemberMapper.toMemberResponse(addProjectMember(project, invitee, request.role()));
     }
@@ -97,7 +98,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService  {
         ProjectMemberId projectMemberId = new ProjectMemberId(project.getId(), user.getId());
 
         if (projectMemberRepository.existsById(projectMemberId))
-            throw new RuntimeException("Cannot invite once again...");
+            throw new BadRequestException("Cannot invite once again...");
 
         ProjectMember member = ProjectMember.builder()
                 .id(projectMemberId)
