@@ -1,5 +1,6 @@
 package com.nomesh.projects.lovable_clone.config;
 
+import com.nomesh.projects.lovable_clone.properties.MinioProperties;
 import io.minio.MinioClient;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

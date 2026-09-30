@@ -1,6 +1,6 @@
 package com.nomesh.projects.lovable_clone.service.payment;
 
-import com.nomesh.projects.lovable_clone.config.ClientProperties;
+import com.nomesh.projects.lovable_clone.properties.ClientProperties;
 import com.nomesh.projects.lovable_clone.dto.subscription.CheckoutRequest;
 import com.nomesh.projects.lovable_clone.dto.subscription.CheckoutResponse;
 import com.nomesh.projects.lovable_clone.dto.subscription.PortalResponse;

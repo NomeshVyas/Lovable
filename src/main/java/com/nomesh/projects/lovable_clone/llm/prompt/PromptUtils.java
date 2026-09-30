@@ -1,10 +1,13 @@
-package com.nomesh.projects.lovable_clone.llm;
+package com.nomesh.projects.lovable_clone.llm.prompt;
 
 import java.time.Instant;
+import java.util.Set;
 
 public final class PromptUtils {
 
     private PromptUtils() {}
+
+    public static int atMostGeneratedFiles = 4;
 
     public static String codeGenerationSystemPrompt() {
         return """
@@ -17,7 +20,7 @@ public final class PromptUtils {
              ## 1. Interaction Protocol (STRICT)
              You must follow this sequence for every request:
         
-             1. **Analyze**: Use `<tool>` to read necessary files.
+             1. **Analyze**: If the "Current project files" list is non-empty, use `<tool>` to read the ones you need. If it is empty, SKIP this step entirely.
              2. **Plan**: Output a `<message>` listing EXACTLY which files you will create or modify.
              3. **Execute**: Output `<file>` tags for the planned files.
              4. **Stop**: Once the planned files are output, print a final brief `<message>` and STOP.
@@ -42,6 +45,8 @@ public final class PromptUtils {
              3. **<file path="...">**
                 - Complete file content. No placeholders.
                 - Example: `<file path="src/App.tsx">...</file>`
+
+             4. **Output Budget**: Output AT MOST %d files per response. Then either continue in the next turn or finish with <message phase="completed">.
         
              ## Complete Example Flow
         
@@ -102,12 +107,26 @@ public final class PromptUtils {
         
              ## 7. Never Do This:
              - Never use emojis, line breaks, etc. in your response. The message tag can only have basic markdown.
-             - Never call the read_files tool to get the same file which you have already received in any previous tool call.\\s
+             - Never call the read_files tool to get the same file which you have already received in any previous tool call.
         
              ## 8. Always Do This:
-             - Always read the file by using the read_files tool before updating the file content, if the file content is not known by you already.
+             - If "Current project files" is empty, do NOT attempt to read anything. Go straight to planning and generating files.
+             - Only request files that actually appear in the "Current project files" list.
              - If you are going to calling read_files tool then Always generate a tool tag with proper args before calling the read_files tool.
              - Always keep your message short and to the point.
-        """.formatted(Instant.now());
+        """.formatted(Instant.now(), atMostGeneratedFiles);
+    }
+
+    public static String continuationMessage(String originalRequest, Set<String> completeFilePaths) {
+        return """
+           Original request: %s
+
+           Your previous response was cut off. These files already exist and are saved \
+           - do NOT output them again:
+           %s
+
+           Continue with the remaining files. Output AT MOST %d, then either continue \
+           or finish with <message phase="completed">.
+           """.formatted(originalRequest, String.join("\n", completeFilePaths), atMostGeneratedFiles);
     }
 }

@@ -114,4 +114,11 @@ public class GlobalExceptionHandler {
         log.error(apiError.toString(), exception);
         return ResponseEntity.status(apiError.status()).body(apiError);
     }
+
+    @ExceptionHandler(AiProviderException.class)
+    public ResponseEntity<ApiError> handleAiProviderException(AiProviderException exception) {
+        ApiError apiError = new ApiError(HttpStatus.BAD_GATEWAY, "Ai provider giving error: " + exception.getMessage());
+        log.error(apiError.toString(), exception);
+        return ResponseEntity.status(apiError.status()).body(apiError);
+    }
 }

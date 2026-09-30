@@ -1,4 +1,4 @@
-package com.nomesh.projects.lovable_clone.config;
+package com.nomesh.projects.lovable_clone.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

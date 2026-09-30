@@ -1,6 +1,7 @@
 package com.nomesh.projects.lovable_clone.security;
 
 import com.nomesh.projects.lovable_clone.entity.SystemRole;
+import jakarta.servlet.DispatcherType;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -31,6 +32,7 @@ public class WebSecurityConfig {
                 .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
                         auth -> auth
+                                .dispatcherTypeMatchers(DispatcherType.ASYNC, DispatcherType.ERROR).permitAll()
                                 .requestMatchers(
                                         "/api/auth/signup",
                                         "/api/auth/login",

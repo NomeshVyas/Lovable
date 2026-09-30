@@ -1,6 +1,6 @@
 package com.nomesh.projects.lovable_clone.service.file;
 
-import com.nomesh.projects.lovable_clone.config.MinioProperties;
+import com.nomesh.projects.lovable_clone.properties.MinioProperties;
 import com.nomesh.projects.lovable_clone.dto.file.FileContentResponse;
 import com.nomesh.projects.lovable_clone.dto.file.FileNode;
 import com.nomesh.projects.lovable_clone.entity.Project;
@@ -58,41 +58,41 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
     @Override
     public void saveFile(Long projectId, String filePath, String fileContent) {
-//        Project project = projectRepository.getByIdOrThrow(projectId);
-//
-//        String cleanPath = normalizeFilePath(filePath);
-//        String objectKey = projectId + "/" + cleanPath;
-//
-//        try {
-//            byte[] contentBytes = fileContent.getBytes(StandardCharsets.UTF_8);
-//            InputStream inputStream = new ByteArrayInputStream(contentBytes);
-//
-//            // Saving the file content
-//            minioClient.putObject(
-//                    PutObjectArgs.builder()
-//                            .bucket(minioProperties.projectBucket())
-//                            .object(objectKey)
-//                            .stream(inputStream, (long) contentBytes.length, -1L)
-//                            .contentType(determineContentType(filePath))
-//                            .build()
-//            );
-//
-//            // Saving the metadata
-//            ProjectFile projectFile = projectFileRepository.findByProjectIdAndPath(projectId, cleanPath)
-//                    .orElseGet(() -> ProjectFile.builder()
-//                            .project(project)
-//                            .path(cleanPath)
-//                            .minioObjectKey(objectKey)
-//                            .build()
-//                    );
-//
-//            projectFile.setUpdatedAt(Instant.now());
-//            projectFileRepository.save(projectFile);
-//            log.info("Saved file on Minio: {}", objectKey);
-//        } catch (Exception exception) {
-//            log.error("Failed to save file {} / {}", projectId, cleanPath, exception);
-//            throw new StorageException("File save failed on Minio", exception);
-//        }
+        Project project = projectRepository.getByIdOrThrow(projectId);
+
+        String cleanPath = normalizeFilePath(filePath);
+        String objectKey = projectId + "/" + cleanPath;
+
+        try {
+            byte[] contentBytes = fileContent.getBytes(StandardCharsets.UTF_8);
+            InputStream inputStream = new ByteArrayInputStream(contentBytes);
+
+            // Saving the file content
+            minioClient.putObject(
+                    PutObjectArgs.builder()
+                            .bucket(minioProperties.projectBucket())
+                            .object(objectKey)
+                            .stream(inputStream, (long) contentBytes.length, -1L)
+                            .contentType(determineContentType(filePath))
+                            .build()
+            );
+
+            // Saving the metadata
+            ProjectFile projectFile = projectFileRepository.findByProjectIdAndPath(projectId, cleanPath)
+                    .orElseGet(() -> ProjectFile.builder()
+                            .project(project)
+                            .path(cleanPath)
+                            .minioObjectKey(objectKey)
+                            .build()
+                    );
+
+            projectFile.setUpdatedAt(Instant.now());
+            projectFileRepository.save(projectFile);
+            log.info("Saved file on Minio: {}", objectKey);
+        } catch (Exception exception) {
+            log.error("Failed to save file {} / {}", projectId, cleanPath, exception);
+            throw new StorageException("File save failed on Minio", exception);
+        }
     }
 
     private String determineContentType(String filePath) {

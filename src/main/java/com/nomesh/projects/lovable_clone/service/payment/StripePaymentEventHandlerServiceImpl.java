@@ -1,6 +1,6 @@
 package com.nomesh.projects.lovable_clone.service.payment;
 
-import com.nomesh.projects.lovable_clone.config.StripeProperties;
+import com.nomesh.projects.lovable_clone.properties.StripeProperties;
 import com.nomesh.projects.lovable_clone.entity.SubscriptionStatus;
 import com.nomesh.projects.lovable_clone.exception.BadRequestException;
 import com.nomesh.projects.lovable_clone.exception.PaymentException;

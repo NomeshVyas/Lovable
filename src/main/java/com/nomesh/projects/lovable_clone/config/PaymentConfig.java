@@ -1,11 +1,11 @@
 package com.nomesh.projects.lovable_clone.config;
 
+import com.nomesh.projects.lovable_clone.properties.StripeProperties;
 import com.stripe.Stripe;
 import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
