@@ -1,8 +1,21 @@
 name: lovable
 
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: lovable-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - pgvector
+      - minio
+    restart: unless-stopped
+
   postgres:
-    image: postgres:18
+    image: pgvector/pgvector:0.8.1-pg18-trixie
     container_name: postgres-db
     environment:
       POSTGRES_DB: lovable
@@ -27,19 +40,6 @@ services:
       - "host.docker.internal:host-gateway"
     restart: unless-stopped
 
-  pgvector:
-    image: pgvector/pgvector:0.8.1-pg18-trixie
-    container_name: pgvector-db
-    environment:
-      POSTGRES_DB: pgvector_test
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    ports:
-      - "5441:5432"
-    volumes:
-      - pgvector-data:/var/lib/postgresql
-    restart: unless-stopped
-
   minio:
     image: quay.io/minio/minio:latest
     container_name: minio
@@ -56,5 +56,4 @@ services:
 
 volumes:
   postgres_data:
-  pgvector-data:
   minio-data:
